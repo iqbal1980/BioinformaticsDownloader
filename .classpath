@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="lib" path="lib/aopalliance.jar"/>
+	<classpathentry kind="lib" path="lib/commons-codec.jar"/>
+	<classpathentry kind="lib" path="lib/commons-httpclient.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging.jar"/>
+	<classpathentry kind="lib" path="lib/log4j.jar"/>
+	<classpathentry kind="lib" path="lib/spring.aop.jar"/>
+	<classpathentry kind="lib" path="lib/spring.beans.jar"/>
+	<classpathentry kind="lib" path="lib/spring.context.jar"/>
+	<classpathentry kind="lib" path="lib/spring.core.jar"/>
+	<classpathentry kind="lib" path="lib/spring.web.jar"/>
+	<classpathentry kind="lib" path="lib/uniprotjapi.jar"/>
+	<classpathentry kind="lib" path="lib/biojava3-aa-prop-3.0.7.jar"/>
+	<classpathentry kind="lib" path="lib/biojava3-alignment-3.0.7.jar"/>
+	<classpathentry kind="lib" path="lib/biojava3-core-3.0.7.jar"/>
+	<classpathentry kind="lib" path="lib/biojava3-genome-3.0.7.jar"/>
+	<classpathentry kind="lib" path="lib/biojava3-modfinder-3.0.7.jar"/>
+	<classpathentry kind="lib" path="lib/biojava3-phylo-3.0.7.jar"/>
+	<classpathentry kind="lib" path="lib/biojava3-protein-disorder-3.0.7.jar"/>
+	<classpathentry kind="lib" path="lib/biojava3-structure-3.0.7.jar"/>
+	<classpathentry kind="lib" path="lib/biojava3-ws-3.0.7.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
