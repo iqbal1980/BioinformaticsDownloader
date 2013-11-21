@@ -16,6 +16,9 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.biojava3.data.sequence.FastaSequence;
+import org.biojava3.ronn.Jronn;
+import org.biojava3.ronn.Jronn.Range;
 
 import uk.ac.ebi.kraken.interfaces.uniprot.DatabaseCrossReference;
 import uk.ac.ebi.kraken.interfaces.uniprot.Gene;
@@ -31,12 +34,12 @@ import uk.ac.ebi.kraken.uuw.services.remoting.UniProtQueryService;
 
 public class UniProtDownloader implements Handler {
 	
-	private static void logToCSVFile(StringBuffer sb) {
+	private static void logToCSVFile(StringBuffer sb, String fileName) {
 	try {
 	 
 	String content = sb.toString();
  
-	File file = new File("C:\\Java\\UniProt\\filename.html");
+	File file = new File("C:\\Java\\UniProt\\"+fileName);
  
 	if (!file.exists()) {
 	file.createNewFile();
@@ -109,8 +112,9 @@ public class UniProtDownloader implements Handler {
 
 	      byte[] responseBody = method.getResponseBody();
 	      
-	      return new String(responseBody).replace(">", "&gt;");
-
+	      //return new String(responseBody).replace(">", "&gt;");
+	      return new String(responseBody);
+	   
 	    } catch (HttpException e) {
 	      System.err.println("Fatal protocol violation: " + e.getMessage());
 	      e.printStackTrace();
@@ -130,164 +134,36 @@ public class UniProtDownloader implements Handler {
 	    
 	    
 	    Query reviewedSpondinQuery   = UniProtQueryBuilder.setReviewedEntries(UniProtQueryBuilder.buildFullTextSearch("spondin"));
-	    Query unreviewedSpondinQuery = UniProtQueryBuilder.setReviewedEntries(UniProtQueryBuilder.buildFullTextSearch("spondin"));
+	    Query unreviewedSpondinQuery = UniProtQueryBuilder.setUnreviewedEntries(UniProtQueryBuilder.buildFullTextSearch("spondin"));
 	   
-	    EntryIterator<UniProtEntry>  entryIterator = entryRetrievalService2.getEntryIterator(reviewedSpondinQuery);
-	    System.out.println("Starting reviewed entries ============> "+entryIterator.getResultSize());
-	    
-	   
-	    
-	    StringBuffer sb = new StringBuffer();
-	    
-	    StringBuffer sbProteinFastas = new StringBuffer();
-	    
-	    
-	    sb.append("<html>\r\n");
-	    sb.append("<head>\r\n");
-	    sb.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"jqueryui/css/smoothness/jquery-ui-1.10.3.custom.min.css\"/>\r\n");
-	    sb.append("</head>\r\n");
-	    
- 
-	    sb.append("<body>\r\n");
-	    
-	    sb.append("<script src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js\"></script>\r\n");
-	    sb.append("<script src=\"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js\"></script>\r\n");
- 
-	    sb.append("<script type=\"text/javascript\">$(document).ready(function() { $('td').click(function() { $( '.comment' ).css('visibility', 'visible');$( '.comment' ).dialog({ modal: true, width:'450', heigh: 'auto' }); }) });   </script>\r\n");
- 
-	    sb.append("<table border=\"1\">\r\n");
-	    
-	    
-	    
-    for(UniProtEntry test : entryIterator) {
-	    	
-	    	sb.append("<tr>\r\n");
-	    	
-	    	sb.append("<td>\r\n");
-	    	sb.append(test.getPrimaryUniProtAccession().getValue());
-	    	sb.append("</td>\r\n");
-	    	
-	    	sb.append("<td>\r\n");
-	    	sb.append(test.getUniProtId());
-	    	sb.append("</td>\r\n");
-	    	
-	    	sb.append("<td>\r\n");
-	    	sb.append(test.getOrganism().getCommonName());
-	    	sb.append("</td>\r\n");
-	    	
-	    	sb.append("<td>\r\n");
-	    	sb.append(test.getOrganism().getScientificName());
-	    	sb.append("</td>\r\n");
-	    	
-	    	
-	    	/*
-	    	sb.append("<td>");
-	    	ArrayList<Gene> geneList = (ArrayList<Gene>) test.getGenes();
-	    	for(Gene myGene : geneList) {
-	    	sb.append(myGene.getGeneName());
-	    	sb.append("<br/>");
-	    	}	
-	    	sb.append("</td>");
-	    	
-	    	
-	    	sb.append("<td>");
-	    	Collection<DatabaseCrossReference> references = test.getDatabaseCrossReferences();
-	    	for(DatabaseCrossReference reference : references) {
-	    	sb.append(reference.getDatabase().toDisplayName());
-	    	sb.append("<br/>");
- 	    	}	
-	    	sb.append("</td>");
-	    	
-	    	sb.append("<td>");
-	    	for(DatabaseCrossReference reference : references) {
-	    	sb.append(reference);
-	    	sb.append("<br/>");
-	    	}	
-	    	sb.append("</td>");
-	    	
-	    	
-	    	
-	    	sb.append("<td>");
-	    	ArrayList<Feature> features =  (ArrayList<Feature>) test.getFeatures();
-	    	for(Feature feature : features) {
-	    	sb.append(feature.getType());
-	    	sb.append("<br/>");
-	    	sb.append(feature.getFeatureLocation().getStart());
-	    	sb.append("<br/>");
-	    	sb.append(feature.getFeatureLocation().getEnd());
-	    	sb.append("<br/>");
-	    	sb.append(feature.getFeatureLocation().getStart());
-	    	sb.append("<br/>");
-	    	}	
-	    	sb.append("</td>");
-	    	*/
-	    	
-	    	sb.append("<td>\r\n");
-	    	sb.append("CLICK HERE");
-	    	sb.append("</div>\r\n");
-	    	
-	    	sbProteinFastas.append("<div style=\"visibility: hidden; word-wrap: break-word;\" class=\"comment\">"+getFASTA(test)+"</div>\r\n");
-	    	
-	    	sb.append("</tr>\r\n");
-	    	
-	    	break;
-	    	//System.out.println(test.getPrimaryUniProtAccession().getValue());
-	    	//System.out.println(test.getUniProtId());
-	    	
-	    	//System.out.println("test = "+test.getUniProtId());
-	    	//break;
-	    	//System.out.println(test.getOrganism().getCommonName());
-	    	//System.out.println(test.getOrganism().getScientificName());
+	    ////////////////////////////////////////////////////
+	    EntryIterator<UniProtEntry>  entryIteratorReviewed = entryRetrievalService2.getEntryIterator(reviewedSpondinQuery);
+	    System.out.println("Starting reviewed entries ============> "+entryIteratorReviewed.getResultSize());
 
+	    StringBuffer sbReviewed = new StringBuffer();
  
-	    	//System.out.println("---------------------------------------------------------------");
-	    	//System.out.println( getFASTA(test));
-	    	//System.out.println("---------------------------------------------------------------");
  
-	    	//System.out.println("ssssssssssssssssss = "+test.getProteinDescription());
+	    for(UniProtEntry test : entryIteratorReviewed) {
+	    	sbReviewed.append(getFASTA(test));
+	    	sbReviewed.append("\n");
 	    }
-    
-    	sb.append("</table>\r\n");
-    	sb.append(sbProteinFastas);
-    	sb.append("</body>\r\n");
-	    sb.append("</html>\r\n");
+	    logToCSVFile(sbReviewed, "reviewed.txt");
+	    ////////////////////////////////////////////////////
 	    
-	   
 	    
-	   /* 
-	    for(UniProtEntry test : entryIterator) {
-	    	
-	    	
-	    	sb.append(test.getPrimaryUniProtAccession().getValue());
-	    	sb.append(",");
-	    	sb.append(test.getUniProtId());
-	    	sb.append(",");
-	    	sb.append(test.getOrganism().getCommonName());
-	    	sb.append(",");
-	    	sb.append(test.getOrganism().getScientificName());
-	    	sb.append(",");
-	    	sb.append(getFASTA(test));
-	    	sb.append(",");
-	    	sb.append("\n");
-	    	
-	    	//System.out.println(test.getPrimaryUniProtAccession().getValue());
-	    	//System.out.println(test.getUniProtId());
-	    	
-	    	//System.out.println("test = "+test.getUniProtId());
-	    	//break;
-	    	//System.out.println(test.getOrganism().getCommonName());
-	    	//System.out.println(test.getOrganism().getScientificName());
+	    ////////////////////////////////////////////////////
+	    EntryIterator<UniProtEntry>  entryIteratorUnreviewed = entryRetrievalService2.getEntryIterator(unreviewedSpondinQuery);
+	    System.out.println("Starting unreviewed entries ============> "+entryIteratorUnreviewed.getResultSize());
 
  
-	    	//System.out.println("---------------------------------------------------------------");
-	    	//System.out.println( getFASTA(test));
-	    	//System.out.println("---------------------------------------------------------------");
+	    StringBuffer sbUnReviewed = new StringBuffer();
  
-	    	//System.out.println("ssssssssssssssssss = "+test.getProteinDescription());
+	    for(UniProtEntry test : entryIteratorUnreviewed) {
+	    	sbUnReviewed.append(getFASTA(test));
+	    	sbReviewed.append("\n");
 	    }
-	    */
-
-	    logToCSVFile(sb);
+	    logToCSVFile(sbUnReviewed, "unreviewed.txt");
+	    ////////////////////////////////////////////////////
 	    
 	}
 
